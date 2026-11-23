@@ -1,0 +1,216 @@
+:root {
+  --stand-paper: #e7dfc9;
+  --stand-ink: #27281e;
+  --stand-line: #beb49a;
+  --stand-active: #3e4a34;
+  --stand-warning: #83371c;
+}
+body { padding: 14px clamp(10px, 2vw, 30px) 16px; }
+.lab { max-width: 1500px; }
+.masthead { margin-bottom: 12px; padding: 0 0 10px; }
+.wordmark h1 { font-size: clamp(22px, 3vw, 36px); font-weight: 750; letter-spacing: -.035em; }
+.workstation { display: grid; grid-template-columns: minmax(0, 1fr) minmax(330px, 396px); gap: 14px; align-items: start; }
+.scene-column, .engine-workspace { min-width: 0; }
+.scene-column { position: sticky; top: 10px; }
+.engine-workspace { background: var(--bg); }
+.engine-workspace .inspection-actions { padding: 4px 0; background: var(--bg); }
+.engine-workspace .inspection-actions button {
+  min-height: 34px;
+  padding: 4px 9px;
+  border: 1px solid var(--line);
+  color: #e9e3d3;
+  background: #282821;
+  font-size: 12px;
+  cursor: pointer;
+}
+.engine-workspace .inspection-actions button[aria-pressed=true] { border-color: #d8ac6d; }
+.machine #temperature-scale {
+  position: absolute;
+  right: 6px;
+  top: 5px;
+  z-index: 2;
+  width: max-content;
+  max-width: calc(100% - 12px);
+  border: 1px solid var(--line);
+}
+.machine #inspection-note:not([hidden]) {
+  display: block;
+  position: absolute;
+  inset: auto 6px 30px;
+  max-height: 4.4em;
+  overflow: auto;
+  margin: 0;
+  padding: 4px 7px;
+  border: 1px solid #77674e;
+  background: #24231ce8;
+}
+.scene-column .event-log, .scene-column .event-log:empty {
+  display: block;
+  height: 2.8em;
+  overflow: auto;
+  margin: 3px 0;
+}
+.engine-workspace :is(.inspection-tools, .part-tools, .machine, .control-deck, .cylinder-panel) { max-width: none; margin-inline: 0; }
+.inspection-tools { padding-top: 0; }
+.stand {
+  min-width: 0;
+  color-scheme: light;
+  color: var(--stand-ink);
+  background: var(--stand-paper);
+  border: 1px solid #b3a484;
+  border-radius: 3px;
+  scrollbar-color: #8c8168 var(--stand-paper);
+}
+.stand-heading {
+  padding: 15px 14px 12px;
+  border-bottom: 1px solid var(--stand-line);
+  background: #dcd2b7;
+}
+.stand-heading h2 { font-size: 19px; font-weight: 700; margin: 0 0 4px; }
+.stand-heading span { color: #514c3d; font-size: 12px; }
+.stand .control-deck {
+  grid-template-columns: minmax(0,1fr);
+  gap: 6px;
+  margin: 0;
+  padding: 7px;
+  border-radius: 0;
+}
+#drive-actions { display: grid; grid-template-columns: minmax(72px,.55fr) minmax(0,1.45fr); gap: 6px; }
+#mobile-drive:empty { display: none; }
+.stand .cockpit-cluster { grid-column: 1 / -1; max-width: none; }
+.stand .tachometer { width: 106px; }
+.stand .coolant-gauge { width: 67px; }
+.stand .key-switch, .stand .pedal-pair .pedal { min-height: 86px; }
+.stand-utilities, .stand-inspection { padding: 7px 9px; border-bottom: 1px solid var(--stand-line); }
+.stand-utilities { display: flex; gap: 6px; }
+.stand-utilities button { flex: 1; }
+.stand-inspection summary { min-height: 33px; padding: 7px 2px; cursor: pointer; font-size: 13px; font-weight: 650; }
+.stand-inspection[open] summary { margin-bottom: 4px; }
+.stand-inspection .inspection-tools { display: grid; gap: 5px; padding: 0 0 5px; }
+.stand-inspection .part-tools { margin: 0 0 5px; gap: 4px; }
+.stand-inspection :is(.inspection-tools,.part-tools) button {
+  min-height: 34px;
+  padding: 4px 6px;
+  color: var(--stand-ink);
+  background: #efe8d6;
+  border-color: #a4997c;
+  font-size: 11px;
+}
+.stand-inspection :is(.inspection-tools,.part-tools) button[aria-pressed=true] { background: var(--stand-active); color: #fff8e2; box-shadow: none; }
+.stand-inspection .cylinders { background: #2d3025; border-radius: 3px; }
+.stand-inspection .cyl { padding: 4px 3px; min-height: 41px; text-align: center; }
+.stand-inspection .cyl span { font-size: 10px; }
+.stand-inspection .cyl b { font-size: 8px; overflow-wrap: anywhere; }
+.stand-tabs { position: sticky; top: 0; z-index: 2; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); }
+.stand-panels { height: clamp(240px, 42dvh, 570px); overflow: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
+.stand-panels :is(button,select,input) { scroll-margin-block: 55px 8px; }
+.stand-tabs button {
+  cursor: pointer;
+  min-height: 45px;
+  padding: 7px 4px;
+  border: 0;
+  border-bottom: 1px solid var(--stand-line);
+  background: #dcd2b7;
+  color: var(--stand-ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+.stand-tabs button + button { border-left: 1px solid var(--stand-line); }
+.stand-tabs button[aria-selected=true] { background: var(--stand-active); color: #fff8e2; }
+.stand :is(button, select, input, [tabindex="0"]):focus-visible { outline: 2px solid #205674; outline-offset: -2px; }
+.stand-page { padding: 14px; }
+.stand-page[hidden], .stand-select[hidden] { display: none; }
+.stand-rpm { background: #2c3125; color: #f1e7c9; padding: 10px 11px 8px; border-radius: 2px; }
+.stand-rpm div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 7px; }
+.stand-rpm span { font-size: 12px; margin-right: auto; }
+.stand-rpm strong { font: 600 30px/.95 var(--mono); }
+.stand-rpm strong.warning { color: #ffc18e; }
+.stand-rpm small { font-size: 10px; color: #e0d5b3; }
+.stand-rpm meter { display: block; width: 100%; height: 11px; margin-top: 5px; accent-color: #cfbd81; }
+.stand-rpm meter::-webkit-meter-bar { background: #161c14; border: 0; border-radius: 0; }
+.stand-rpm meter::-webkit-meter-optimum-value { background: #c2c387; }
+.stand-rpm meter::-webkit-meter-suboptimum-value { background: #ddab64; }
+.stand-readings { margin: 8px 0 0; }
+.stand-readings div { display: flex; justify-content: space-between; align-items: baseline; gap: 7px; padding: 8px 0; border-bottom: 1px solid var(--stand-line); }
+.stand-readings dt { font-size: 12px; }
+.stand-readings dd, .stand-range output { margin: 0; flex: 0 0 auto; font: 600 12px var(--mono); }
+.stand-readings .warning, .stand-reaction.warning { color: var(--stand-warning); font-weight: 700; }
+.stand-reaction { color: #4e493a; margin: 11px 0 0; font-size: 13px; line-height: 1.45; }
+.stand-select { display: grid; gap: 5px; margin-bottom: 9px; font-size: 13px; font-weight: 650; }
+.stand-select select {
+  min-height: 44px;
+  width: 100%;
+  padding: 5px 8px;
+  border: 1px solid #8f856d;
+  background: #f2ebd8;
+  color: var(--stand-ink);
+  border-radius: 2px;
+  font: inherit;
+}
+.stand-hold { display: flex; min-height: 40px; align-items: center; gap: 6px; font-size: 13px; font-weight: 650; }
+.stand input { accent-color: var(--stand-active); }
+.stand-range { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: baseline; gap: 0 6px; border-top: 1px solid var(--stand-line); padding-top: 6px; }
+.stand-range label { font-size: 12px; }
+.stand-range input { grid-column: 1 / -1; width: 100%; margin: 0; min-height: 36px; cursor: ew-resize; }
+.fault-heading { position: sticky; top: 0; z-index: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 7px; padding-block: 4px; background: var(--stand-paper); }
+.fault-heading label { font-size: 13px; font-weight: 650; }
+.fault-heading select, .fault-heading button {
+  min-height: 42px;
+  padding: 4px 8px;
+  border: 1px solid #9d9276;
+  border-radius: 2px;
+  background: #f4ecda;
+  color: var(--stand-ink);
+  font: inherit;
+}
+.fault-heading button { margin-left: auto; cursor: pointer; font-size: 12px; }
+.fault-heading button[aria-disabled=true] { opacity: .54; cursor: default; }
+#fault-count { margin-left: 2px; font-variant-numeric: tabular-nums; }
+.fault-help { margin: 8px 0; color: #524b3a; font-size: 12px; line-height: 1.35; }
+#fault-list h3 { margin: 13px 0 5px; font-size: 14px; }
+.fault-rows { padding: 0; margin: 0; list-style: none; }
+.fault-row { display: grid; grid-template-columns: minmax(0,1fr) 64px; align-items: center; border-top: 1px solid var(--stand-line); padding-block: 3px; }
+.fault-target { align-self: end; color: var(--stand-ink); background: transparent; border: 0; text-align: left; cursor: pointer; min-height: 33px; padding: 3px 2px; font-size: 13px; font-weight: 650; }
+.fault-target:hover { text-decoration: underline; }
+.fault-value { color: #534c39; font: 11px var(--mono); padding: 0 2px 4px; }
+.fault-switch { grid-column: 2; grid-row: 1 / span 2; min-height: 43px; color: var(--stand-ink); background: #f1e9d4; border: 1px solid #8f8468; border-radius: 3px; cursor: pointer; font-size: 12px; font-weight: 650; }
+.fault-switch[aria-checked=true] { color: #fff8e2; background: var(--stand-active); border-color: var(--stand-active); }
+.fault-switch:disabled { opacity: .52; cursor: default; }
+.stand-feedback { height: 2.8em; margin: 5px 0 0; color: #704027; font-size: 12px; line-height: 1.4; }
+.lab footer { margin-top: 10px; }
+@media (min-width: 901px) {
+  .workstation { max-width: clamp(910px, calc((100dvh - 130px) * 1.7647 + 410px), 1500px); margin-inline: auto; }
+}
+@media (max-width: 900px) {
+  .workstation { display: block; }
+  .scene-column { display: contents; }
+  .engine-workspace { position: sticky; top: 0; z-index: 4; }
+  .engine-workspace #engine { max-height: 32dvh; }
+  .machine #temperature-scale { padding: 4px 6px; flex-direction: row; }
+  .machine #temperature-scale > span { display: none; }
+  #mobile-drive { padding: 3px 0; background: #1e231b; }
+  #mobile-drive .key-switch, #mobile-drive .pedal-pair .pedal {
+    min-height: 58px;
+    padding: 4px 7px;
+    font-size: 13px;
+  }
+  #mobile-drive .key-dial, #mobile-drive .pedal-mechanism { display: none; }
+  #mobile-drive .pedal-name { position: static; justify-content: center; }
+  #mobile-drive .pedal-name small { display: none; }
+  .stand { margin-top: 6px; }
+  .stand-heading { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .stand-tabs { top: var(--stage-height, 260px); }
+  .stand-panels { height: max(215px, calc(100dvh - var(--stage-height, 260px) - 68px)); }
+  #mobile-instruments { margin: -14px -14px 10px; }
+}
+@media (max-width: 900px) and (max-height: 440px) {
+  .engine-workspace, .stand-tabs { position: static; }
+}
+@media (max-width: 680px) {
+  .masthead { margin-bottom: 7px; }
+  .wordmark svg { display: none; }
+  #dash-mode:not([hidden]) { display: none; }
+  .stand-range input { min-height: 44px; }
+  .inspection-tools button, .part-tools button { font-size: 11px; }
+  .workstation { gap: 10px; }
+}

@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1c1c19"><meta name="description" content="Последний поршень: интерактивный двигатель в разрезе. Газ, дым, износ и бесконечное выживание на одном цилиндре.">
+<title>Last Piston · Держится до последнего</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23111413'/%3E%3Cpath d='M8 7h16v10H8zM16 17v8M12 25h8' fill='none' stroke='%23d1af76' stroke-width='3'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="workshop.css">
+<link rel="stylesheet" href="cutaway.css">
+<link rel="stylesheet" href="instrument.css">
+<link rel="stylesheet" href="dashboard.css">
+<link rel="stylesheet" href="ignition.css">
+<link rel="stylesheet" href="realism.css">
+<link rel="stylesheet" href="assets.css">
+<link rel="stylesheet" href="settings.css">
+<link rel="stylesheet" href="test-stand.css">
+<link rel="stylesheet" href="bench-finish.css">
+<script defer src="src/simulation.js"></script>
+<script defer src="src/dynamics.js"></script><script defer src="src/mechanics.js"></script><script defer src="src/powertrain.js"></script><script defer src="src/dyno.js"></script><script defer src="src/ignition.js"></script><script defer src="src/timing-drive.js"></script><script defer src="src/oil-pan.js"></script><script defer src="src/oil-splash.js"></script><script defer src="src/internals.js"></script><script defer src="src/audio.js"></script>
+<script defer src="src/mechanical-audio.js"></script><script defer src="src/sample-bank.js"></script><script defer src="assets/soundbank.js"></script><script defer src="src/audio-utils.js"></script><script defer src="src/sample-audio.js"></script><script defer src="src/renderer.js"></script>
+<script defer src="src/workshop.js"></script><script defer src="src/cutaway.js"></script><script defer src="src/effects.js"></script><script defer src="src/bench.js"></script><script defer src="src/realism-view.js"></script><script defer src="assets/mechanical-atlas.js"></script><script defer src="src/asset-renderer.js"></script><script defer src="src/pedals.js"></script><script defer src="src/dashboard.js"></script><script defer src="src/ignition-panel.js"></script><script defer src="src/test-stand.js"></script><script defer src="src/app.js"></script>
+</head>
+<body>
+<main class="lab">
+<header class="masthead" id="workbench-top">
+  <div class="wordmark"><svg aria-hidden="true" viewBox="0 0 36 40"><path d="M6 3h24v16H6zM6 8h24M6 13h24M18 19v12M12 31a6 6 0 1 0 12 0a6 6 0 1 0-12 0"/></svg><h1>Last Piston</h1></div>
+  <nav class="bench-nav" aria-label="Мастерская">
+    <button type="button" id="failures-open" aria-haspopup="dialog" aria-controls="failures-dialog">Журнал</button>
+    <button type="button" id="settings-open" aria-haspopup="dialog" aria-controls="settings-dialog">Настройки</button>
+    <button type="button" id="new-engine" aria-haspopup="dialog" aria-controls="settings-dialog"><span aria-hidden="true">＋</span> Новый мотор</button>
+  </nav>
+</header>
+<div class="workstation">
+<div class="scene-column">
+<header class="scene-heading"><h2>Моторный стенд</h2><span id="dash-mode">Штатный режим</span></header>
+<div class="engine-workspace">
+<section class="machine" aria-label="Двигатель в разрезе">
+<div class="scene-caption"><span>Рядная четвёрка · 2,0 л</span></div>
+<canvas id="engine" width="1200" height="680" role="img" aria-label="Разрез четырёхцилиндрового двигателя: поршни, шатуны, коленвал, клапаны, дым, масляные потёки и вылетающие детали.">Состояние двигателя отображено на приборной панели.</canvas>
+<div class="stage-meta"><span id="status" data-state="off"><i aria-hidden="true"></i><span id="dash-condition">Зажигание выключено</span></span></div>
+<div id="temperature-scale" hidden aria-label="Шкала температур от 80 до 310 градусов Цельсия">
+  <span>Температура деталей</span>
+  <div class="temperature-key"><i aria-hidden="true"></i><span>80 °C</span><span>140 °C</span><span>210 °C</span><span>310+ °C</span></div>
+</div>
+  <p class="cutaway-note" id="inspection-note" hidden></p>
+</section>
+<div class="inspection-actions"><span class="drive-hint">Выше по педали — сильнее нажатие</span><button type="button" id="inspect-pause" aria-pressed="false">Пауза осмотра</button><button type="button" id="zoom-out">Общий вид</button></div>
+<div id="mobile-drive"></div>
+</div>
+<div id="desktop-instruments">
+<section class="dashboard control-deck" aria-label="Приборная панель и органы управления">
+  <div class="cockpit-cluster">
+    <div class="cluster-dials">
+      <div class="tachometer">
+        <svg id="tach-face" viewBox="12 3 152 134" role="meter" aria-label="Обороты двигателя в минуту" aria-valuemin="0" aria-valuemax="7000" aria-valuenow="0">
+          <defs>
+            <linearGradient id="tach-ring" x1="0" y1="0" x2="0" y2="1">
+              <stop stop-color="#747972"/><stop offset=".13" stop-color="#3b3f3b"/><stop offset=".56" stop-color="#171b18"/><stop offset=".9" stop-color="#484e45"/><stop offset="1" stop-color="#30362e"/>
+            </linearGradient>
+            <radialGradient id="tach-enamel" cx=".46" cy=".05" r=".96">
+              <stop stop-color="#242823"/><stop offset=".55" stop-color="#141915"/><stop offset="1" stop-color="#0c100d"/>
+            </radialGradient>
+          </defs>
+          <circle cx="88" cy="70" r="66" fill="#060806"/>
+          <circle cx="88" cy="70" r="64.2" class="dial-rim" fill="url(#tach-ring)"/>
+          <circle cx="88" cy="70" r="61.7" class="dial-faceplate" fill="url(#tach-enamel)"/>
+          <text x="88" y="117" class="dial-unit" aria-hidden="true">об/мин ×1000</text>
+        </svg>
+        <span class="dial-glass" aria-hidden="true"></span>
+      </div>
+      <div class="coolant-gauge">
+        <svg id="coolant-face" viewBox="0 0 94 81" role="meter" aria-label="Температура охлаждающей жидкости в градусах Цельсия" aria-valuemin="24" aria-valuemax="144" aria-valuenow="24">
+          <path d="M5 49a42 42 0 0 1 84 0v8q0 19-19 21H24Q5 76 5 57Z" class="dial-rim" fill="url(#tach-ring)"/>
+          <path d="M7.5 49a39.5 39.5 0 0 1 79 0v8q0 17-17 19H24.5q-17-2-17-19Z" class="dial-faceplate" fill="url(#tach-enamel)"/>
+          <path d="M45.5 65v-3.8a1.5 1.5 0 0 1 3 0V65a2.5 2.5 0 1 1-3 0zM38 72q2.25-2 4.5 0t4.5 0t4.5 0t4.5 0" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" aria-hidden="true"/>
+        </svg>
+        <span class="dial-glass" aria-hidden="true"></span>
+      </div>
+    </div>
+    <div class="cluster-lamps" aria-label="Контрольные лампы">
+      <span class="cluster-lamp" id="lamp-oil" role="img" aria-label="Низкое давление масла" title="Низкое давление масла">
+        <svg viewBox="0 0 24 20" aria-hidden="true"><path d="M5 8 2 7v5l4 1m0-5 2-2h6l2 2 5-2-2.5 4.5-4.7 5H8L6 12Zm5-2V4M9 4h4m8 7s-2 2.5-2 3.5a1.5 1.5 0 0 0 3 0c0-1-.9-2.5-1-3.5Z"/></svg>
+      </span>
+      <span class="cluster-lamp" id="lamp-charge" role="img" aria-label="Нет зарядки аккумулятора" title="Нет зарядки аккумулятора">
+        <svg viewBox="0 0 24 20" aria-hidden="true"><path d="M3 6h18v10H3zm3 0V4h3v2m6 0V4h3v2M6 11h4m5 0h4m-2-2v4"/></svg>
+      </span>
+      <span class="cluster-lamp" id="lamp-coolant" role="img" aria-label="Перегрев охлаждающей жидкости" title="Перегрев охлаждающей жидкости">
+        <svg viewBox="0 0 24 20" aria-hidden="true"><path d="M11 11V4a1.6 1.6 0 0 1 3.2 0v7a3 3 0 1 1-3.2 0zm4-6h3m-3 3h2M2 17q2.5-2 5 0t5 0t5 0t5 0"/></svg>
+      </span>
+      <span class="cluster-lamp amber" id="lamp-engine" role="img" aria-label="Неисправность двигателя" title="Неисправность двигателя">
+        <svg viewBox="0 0 24 20" aria-hidden="true"><path d="M6 7h3l2-2h5l2 2h2v3h2v5h-4l-2 2h-6l-3-3H4V9h2zM2 9v5m11-9V3m-3 0h6"/></svg>
+      </span>
+      <span class="cluster-lamp" id="lamp-brake" role="img" aria-label="Перегрев тормоза стенда" title="Перегрев тормоза стенда">
+        <svg viewBox="0 0 24 20" aria-hidden="true"><circle cx="12" cy="10" r="6"/><path d="M4 4a9 9 0 0 0 0 12m16-12a9 9 0 0 1 0 12M12 7v4m0 2v.25"/></svg>
+      </span>
+    </div>
+    <span class="sr-only" id="warning-status" role="status"></span>
+  </div>
+  <div id="drive-actions">
+  <section class="ignition-console" aria-label="Замок зажигания">
+    <button id="ignition-key" class="key-switch" data-state="off" type="button" aria-label="Повернуть ключ и запустить двигатель">
+      <span class="key-dial" aria-hidden="true">
+        <span class="key-position key-off">OFF</span><span class="key-position key-on">ON</span><span class="key-position key-start">START</span>
+        <span class="key-barrel"></span><span class="key-blade"></span>
+      </span>
+      <span id="key-action">Пуск</span>
+    </button>
+    <span class="sr-only" id="start-message" role="status">Поверните ключ для запуска.</span>
+  </section>
+  <section class="pedal-console" aria-label="Педали управления">
+    <p id="pedal-help" class="sr-only">Удерживайте педаль. Выше по педали сильнее.</p>
+    <div class="pedal-pair">
+      <button type="button" id="brake" class="pedal brake-pedal" aria-pressed="false" aria-label="Тормоз" aria-describedby="pedal-help"><span class="pedal-name">Тормоз <small>S</small></span><span class="pedal-mechanism" aria-hidden="true"><span class="pedal-arm"></span><span class="pedal-face"></span></span><output class="sr-only" aria-live="off">0%</output></button>
+      <button type="button" id="gas" class="pedal gas-pedal" aria-pressed="false" aria-label="Газ" aria-describedby="pedal-help"><span class="pedal-name">Газ <small>W</small></span><span class="pedal-mechanism" aria-hidden="true"><span class="pedal-arm"></span><span class="pedal-face"></span></span><output class="sr-only" aria-live="off">0%</output></button>
+    </div>
+  </section>
+  </div>
+</section>
+  <details class="stand-inspection" id="stand-inspection">
+  <summary>Осмотр двигателя</summary>
+<nav class="inspection-tools" aria-label="Слои разреза">
+<div class="view-modes"><button type="button" data-view="section" aria-pressed="true">Разрез</button><button type="button" data-view="oil" aria-pressed="false">Смазка</button><button type="button" data-view="thermal" aria-pressed="false">Температуры</button><button type="button" data-view="damage" aria-pressed="false">Износ</button></div>
+
+</nav>
+<div class="part-tools" role="group" aria-label="Осмотр отдельных узлов"><button type="button" data-part="radiator" aria-pressed="false">Радиатор</button><button type="button" data-part="pump" aria-pressed="false">Помпа</button><button type="button" data-part="filter" aria-pressed="false">Фильтр</button><button type="button" data-part="exhaust" aria-pressed="false">Выпуск</button><button type="button" data-part="sump" aria-pressed="false">Картер</button><button type="button" data-part="timing" aria-pressed="false">Цепь ГРМ</button></div>
+  <div class="cylinders">
+    <button type="button" class="cyl" id="cyl0"><span>Цилиндр 1</span><b>СТОП</b></button>
+    <button type="button" class="cyl" id="cyl1"><span>Цилиндр 2</span><b>СТОП</b></button>
+    <button type="button" class="cyl" id="cyl2"><span>Цилиндр 3</span><b>СТОП</b></button>
+    <button type="button" class="cyl" id="cyl3"><span>Цилиндр 4</span><b>СТОП</b></button>
+  </div>
+  </details>
+  </div>
+<p class="event-log" id="event-log" aria-live="polite" aria-atomic="true"></p>
+</div>
+<aside class="stand" aria-labelledby="stand-title">
+  <header class="stand-heading"><h2 id="stand-title">Пульт испытаний</h2><span id="stand-state">Зажигание выключено</span></header>
+  <div class="stand-tabs" role="tablist" aria-label="Панель стенда">
+    <button type="button" role="tab" id="stand-live-tab" aria-controls="stand-live" aria-selected="true">Приборы</button>
+    <button type="button" role="tab" id="stand-controls-tab" aria-controls="stand-controls" aria-selected="false" tabindex="-1">Регуляторы</button>
+    <button type="button" role="tab" id="stand-faults-tab" aria-controls="stand-faults" aria-selected="false" tabindex="-1">Поломки <span id="fault-count" hidden></span></button>
+  </div>
+  <div class="stand-panels">
+  <section class="stand-page" role="tabpanel" id="stand-live" aria-labelledby="stand-live-tab" tabindex="0">
+    <div id="mobile-instruments"></div>
+    <div class="stand-rpm"><div><span>Коленвал</span><strong id="bench-rpm">0</strong><small>об/мин</small></div><meter id="bench-rpm-meter" aria-label="Обороты коленвала" min="0" max="6500" low="800" high="5800" optimum="3000" value="0"></meter></div>
+    <dl class="stand-readings">
+      <div><dt>Средняя скорость поршня</dt><dd id="bench-speed">0,0 м/с</dd></div>
+      <div><dt>Цилиндры в работе</dt><dd id="bench-active">0 / 4</dd></div>
+      <div><dt>Охлаждающая жидкость</dt><dd id="bench-coolant">90 °C</dd></div>
+      <div><dt>Температура масла</dt><dd id="bench-oil-temp">96 °C</dd></div>
+      <div><dt>Давление масла</dt><dd id="bench-pressure">0,0 бар</dd></div>
+      <div><dt>Уровень масла</dt><dd id="bench-oil">4,60 л</dd></div>
+      <div><dt>Топливо в баке</dt><dd id="bench-fuel">20,0 л</dd></div>
+      <div><dt>Поток антифриза</dt><dd id="bench-flow">0 л/мин</dd></div>
+    </dl>
+    <p class="stand-reaction" id="stand-reaction">Поверните ключ для запуска.</p>
+  </section>
+  <section class="stand-page" role="tabpanel" id="stand-controls" aria-labelledby="stand-controls-tab" tabindex="0" hidden>
+    <label class="stand-select" for="profile">Износ <select id="profile"><option value="normal">Штатный режим</option><option value="stress">Ускоренный ×8</option></select></label>
+    <label class="stand-hold"><input type="checkbox" id="bench-hold"> Держать заданные обороты</label>
+    <div class="stand-controls" id="stand-ranges"></div>
+  </section>
+  <section class="stand-page" role="tabpanel" id="stand-faults" aria-labelledby="stand-faults-tab" tabindex="0" hidden>
+    <input id="fault-search" class="fault-search" type="search" aria-label="Поиск поломки" placeholder="Найти деталь или поломку">
+    <div class="fault-heading">
+      <label for="bench-cylinder">Цилиндр</label>
+      <select id="bench-cylinder"><option value="0">1</option><option value="1">2</option><option value="2">3</option><option value="3">4</option></select>
+      <button type="button" id="faults-clear">Выключить все</button>
+    </div>
+    <p class="fault-help">Название приближает деталь. Переключатель включает поломку.</p>
+    <p id="faults-empty" hidden>Совпадений нет. Попробуйте другую деталь.</p>
+    <p class="stand-feedback" id="bench-feedback" role="status"></p>
+    <div id="fault-list"></div>
+  </section>
+  </div>
+</aside>
+</div>
+<footer><span id="audio-status">Звук включится при запуске</span><span class="rule">Игровая модель. Последний цилиндр продолжает работать до выключения зажигания.</span></footer>
+</main>
+<dialog class="settings-dialog failures-dialog" id="failures-dialog" aria-labelledby="failures-title">
+  <header class="settings-header">
+    <h2 id="failures-title">Поломки</h2>
+    <button type="button" id="failures-close" autofocus>Закрыть</button>
+  </header>
+  <div class="utility-row failure-content">
+    <section class="settings-group" aria-labelledby="active-failures-title">
+      <h3 id="active-failures-title">Текущие повреждения</h3>
+      <p id="failures-empty">Повреждений пока нет.</p>
+      <ul id="failure-list"></ul>
+    </section>
+    <details class="journal-box"><summary>Журнал повреждений <span id="journal-count">0</span></summary><ol id="journal"></ol></details>
+  </div>
+</dialog>
+<dialog class="settings-dialog" id="settings-dialog" aria-labelledby="settings-title">
+  <header class="settings-header">
+    <h2 id="settings-title">Настройки</h2>
+    <button type="button" id="settings-close" autofocus>Закрыть</button>
+  </header>
+  <div class="settings-columns">
+    <section class="settings-group" aria-labelledby="setup-title">
+      <h3 id="setup-title">Испытание</h3>
+      <div class="setting-field"><label for="performance-mode">Качество графики</label><select id="performance-mode"><option value="auto">Авто</option><option value="high">Детально</option><option value="eco">Экономно</option></select></div>
+      <label class="setting-toggle"><input id="motion" type="checkbox">Уменьшить тряску</label>
+    </section>
+    <section class="settings-group" aria-labelledby="sound-title">
+      <h3 id="sound-title">Звук</h3>
+      <label class="setting-toggle"><input id="mute" type="checkbox" checked>Воспроизводить звук</label>
+      <div class="setting-field setting-slider"><label for="volume">Общая громкость</label><output id="volume-value" for="volume" aria-hidden="true">65%</output><input type="range" id="volume" min="0" max="100" value="65"></div>
+      <div class="setting-field setting-slider"><label for="engine-mix">Двигатель</label><output id="engine-mix-value" for="engine-mix" aria-hidden="true">100%</output><input type="range" id="engine-mix" min="0" max="100" value="100"></div>
+      <div class="setting-field setting-slider"><label for="mechanical-mix">Металл и дребезг</label><output id="mechanical-mix-value" for="mechanical-mix" aria-hidden="true">70%</output><input type="range" id="mechanical-mix" min="0" max="100" value="70"></div>
+      <details class="settings-recordings"><summary>Записи и лицензии <span id="audio-loaded">0/6</span></summary>
+        <p id="recording-status" role="status">Шесть записей встроены в этот HTML.</p>
+        <button id="reload-audio" type="button">Проверить записи</button>
+        <ul id="sample-credits"></ul>
+      </details>
+    </section>
+    <section class="settings-group settings-service" aria-labelledby="service-title">
+      <h3 id="service-title">Обслуживание</h3>
+      <div class="settings-buttons">
+        <button id="battery-boost" type="button" aria-describedby="boost-help">Пусковое питание АКБ</button>
+        <button id="reset" type="button" aria-expanded="false" aria-controls="reset-prompt">Новый мотор</button>
+      </div>
+      <p id="boost-help">Подключается при выключенном зажигании.</p>
+      <div class="settings-confirm" id="reset-prompt" hidden>
+        <fieldset class="motor-build">
+          <legend>Компоновка</legend>
+          <div class="build-bank" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <label for="build-count">Число цилиндров</label>
+          <select id="build-count"><option>1</option><option>2</option><option>3</option><option selected>4</option></select>
+          <label for="build-litres">Рабочий объём</label><output for="build-litres" id="build-litres-out">2,0 л</output>
+          <input type="range" id="build-litres" min="0.6" max="3.2" step="0.1" value="2">
+          <label for="build-wear">Начальный износ</label><output for="build-wear" id="build-wear-out">0%</output>
+          <input type="range" id="build-wear" min="0" max="80" step="5" value="0">
+          <p id="build-summary"></p>
+        </fieldset>
+        <p id="reset-warning">Сборка заменит текущий мотор и его журнал. Новый мотор заводится ключом.</p>
+        <div class="settings-buttons">
+          <button id="cancel-reset" type="button">Отмена</button>
+          <button id="confirm-reset" type="button" aria-describedby="reset-warning">Собрать мотор</button>
+        </div>
+      </div>
+      <p id="control-info" role="status"></p>
+    </section>
+  </div>
+</dialog>
+<noscript>Для запуска двигателя включите JavaScript.</noscript>
+</body></html>

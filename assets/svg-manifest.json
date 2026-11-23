@@ -1,0 +1,58 @@
+[
+  {
+    "id": "radiator-core",
+    "path": "assets/svg/radiator-core.svg",
+    "bytes": 7860,
+    "sha256": "9fcc0c6640ec464dae7fcfb6c07e7e968ab71b0f59a746583b6d8649d9561b74",
+    "provenance": "Original procedural SVG authored for Last Piston 0.13; no external images"
+  },
+  {
+    "id": "fan-rotor",
+    "path": "assets/svg/fan-rotor.svg",
+    "bytes": 4234,
+    "sha256": "f7aa41135d50d9bf95e1ff34fcd4c9cd408ed2809a6b49fda2bd4b83e5534c30",
+    "provenance": "Original procedural SVG authored for Last Piston 0.13; no external images"
+  },
+  {
+    "id": "filter-cutaway",
+    "path": "assets/svg/filter-cutaway.svg",
+    "bytes": 4239,
+    "sha256": "869bef949c2c1a7b4435c65dcecb605f7f49f5b7b4854e17b97b7736a07ca8c4",
+    "provenance": "Original procedural SVG authored for Last Piston 0.13; no external images"
+  },
+  {
+    "id": "pump-cutaway",
+    "path": "assets/svg/pump-cutaway.svg",
+    "bytes": 1887,
+    "sha256": "8a4cfe8237cb6e625c50f88806424f3ec035098c866bfcf7d88a3da6468cade5",
+    "provenance": "Original procedural SVG authored for Last Piston 0.13; no external images"
+  },
+  {
+    "id": "pump-impeller",
+    "path": "assets/svg/pump-impeller.svg",
+    "bytes": 2364,
+    "sha256": "2b88bc1efc60b4e589c5595ae6c24579040f49f25435f600148f1986d84dbce9",
+    "provenance": "Original procedural SVG authored for Last Piston 0.13; no external images"
+  },
+  {
+    "id": "thermostat-cutaway",
+    "path": "assets/svg/thermostat-cutaway.svg",
+    "bytes": 1834,
+    "sha256": "7e614fe98b2af58bfffeafc2bc0edd455f95c66fbcb06dbcc918ce7caaa4aea5",
+    "provenance": "Original procedural SVG authored for Last Piston 0.13; no external images"
+  },
+  {
+    "id": "muffler-cutaway",
+    "path": "assets/svg/muffler-cutaway.svg",
+    "bytes": 6029,
+    "sha256": "4670f5912f3cd6a67e890034de1dbfc2a9f963a717d65b01f1f0d5dd48b79b97",
+    "provenance": "Original procedural SVG authored for Last Piston 0.13; no external images"
+  },
+  {
+    "id": "flange",
+    "path": "assets/svg/flange.svg",
+    "bytes": 1751,
+    "sha256": "ae5e6626e201110c8538e26c448e35dfb4711dae07c0fbe0edd350f2395ab7ec",
+    "provenance": "Original procedural SVG authored for Last Piston 0.13; no external images"
+  }
+]

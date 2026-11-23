@@ -1,0 +1,12 @@
+{
+  "name": "last-piston-desktop",
+  "version": "0.17.0",
+  "private": true,
+  "dependencies": {
+    "three": "0.179.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.9",
+    "gltfpack": "0.25.0"
+  }
+}

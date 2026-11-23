@@ -1,0 +1,51 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),cp=require('node:child_process'),path=require('node:path');
+const {preparePCM}=require('../src/audio-utils.js'),internals=require('../src/internals.js');
+const {writeGeometry,pistonGeometry,Engine}=internals;
+const root=path.resolve(__dirname,'..');
+test('All recorded WAVs and original SVG assets match checked provenance hashes',()=>{assert.match(cp.execFileSync(process.execPath,['tools/verify-assets.cjs'],{cwd:root}).toString(),/all SHA-256 checks passed/);});
+test('PCM preparation rejects malformed or nonfinite input',()=>{for(const args of [[[],44100],[[new Float32Array(0)],44100],[[Float32Array.of(NaN)],44100],[[Float32Array.of(1),Float32Array.of(2,3)],44100]])assert.throws(()=>preparePCM(...args));});
+test('Recorded PCM removes DC, bounds gain and peak, supports silence',()=>{const d=Float32Array.from({length:4410},(_,i)=>.12+.6*Math.sin(i*.17));const p=preparePCM([d],44100,true);assert.ok(p.peak<=.82001);assert.ok(p.rms<.16);assert.ok(p.gain<=4);const silent=preparePCM([new Float32Array(100)],44100,true);assert.equal(silent.peak,0);assert.ok(silent.samples.every(Number.isFinite));});
+test('Loop tail crossfades into the actual retained loop beginning',()=>{const d=Float32Array.from({length:48000},(_,i)=>.4*Math.sin(i*.015)+.2*Math.sin(i*.041));const p=preparePCM([d],48000,true);assert.equal(p.samples.length,d.length-p.overlap);assert.ok(Math.abs(p.samples[0]-p.samples.at(-1))<.015);});
+test('One-shot attack and decay reach zero without altering length',()=>{const d=Float32Array.from({length:8000},(_,i)=>Math.sin(i*.1));const p=preparePCM([d],16000,false);assert.equal(p.samples.length,d.length);assert.ok(p.samples[0]===0);assert.ok(p.samples.at(-1)===0);});
+test('Stereo recordings are averaged before normalization',()=>{const a=Float32Array.from({length:1024},(_,i)=>Math.sin(i*.1)),b=a.map(x=>-x);const p=preparePCM([a,b],22050);assert.equal(p.peak,0);});
+test('Reusable contact geometry is identical to analytical piston geometry',()=>{const dest={};for(let j=0;j<4;j++)for(let i=0;i<200;i++){const phase=i*.171,x=373+j*144,a=pistonGeometry(phase,j,x),b=writeGeometry(phase,j,x,dest);for(const key of Object.keys(a))assert.ok(Math.abs(a[key]-b[key])<1e-9,key);assert.equal(b,dest);}});
+test('Fragment geometry workspaces are reused across time steps',()=>{const e=new Engine(),a=e.fragments._moving,b=e.fragments._previous;for(let i=0;i<50;i++)e.step(1/120,0,0);assert.equal(e.fragments._moving,a);assert.equal(e.fragments._previous,b);assert.equal(a.length,4);});
+test('A trapped piece does not age toward release while the engine is stationary',()=>{const e=new Engine(),p=e.fragments.add(0,'ring','case',338,538);p.jammed=true;p.jamAge=1;for(let i=0;i<120;i++)e.step(1/120,0,0);assert.equal(p.jammed,true);assert.equal(p.jamAge,1);assert.equal(e.rpm,0);});
+test('Flow path sampling preserves endpoints, distance weighting and zero-length runs',()=>{const window={Piston:{Renderer:class{},clamp:(x,a,b)=>Math.max(a,Math.min(b,x)),TAU:Math.PI*2}};for(const file of ['realism-view.js','asset-renderer.js'])vm.runInNewContext(fs.readFileSync(path.join(root,'src',file),'utf8'),{window});const {measurePath,samplePath}=window.Piston;const p=measurePath([[0,0],[10,0],[10,30]]);assert.equal(p.total,40);assert.deepEqual(Array.from(samplePath(p,.5)).slice(0,2),[10,10]);assert.deepEqual(Array.from(samplePath(p,1)).slice(0,2),[10,30]);assert.ok(samplePath(measurePath([[2,3],[2,3]]),.3).every(Number.isFinite));});
+
+test('Piston surface cache tracks ring wear and opening a crown hole',()=>{
+ const noop=()=>{},gradient=()=>({addColorStop:noop}),c={save:noop,restore:noop,translate:noop,scale:noop,setTransform:noop,drawImage:noop,beginPath:noop,rect:noop,clip:noop,fillRect:noop,
+  createLinearGradient:gradient,createRadialGradient:gradient,moveTo:noop,lineTo:noop,quadraticCurveTo:noop,closePath:noop,fill:noop,stroke:noop};
+ const window={Piston:{...internals,Renderer:class{}}};
+ const document={createElement:()=>({getContext:()=>c})};
+ const Path2D=class{moveTo(){} lineTo(){} quadraticCurveTo(){} closePath(){}};
+ vm.runInNewContext(fs.readFileSync(path.join(root,'src/effects.js'),'utf8'),{window,document,Path2D});
+ const view=Object.create(window.Piston.Renderer.prototype),edges=[];
+ Object.assign(view,{c,cache:new Map(),cacheHits:0,cacheMisses:0,rod:noop,rr:noop,poly:noop,ellipse:noop,circle:noop,metal:noop,fracture:noop,line(points,color,width){
+  if(width===2.1&&points[0][0]===-44)edges.push(points[1][0]);
+ }});
+ const engine=new Engine();
+ view.piston(engine,0);
+ assert.deepEqual(edges.splice(0),[44,44]);
+ engine.cylinders[0].contact.rings=.7;
+ view.piston(engine,0);
+ assert.equal(view.cacheMisses,2);
+ assert.deepEqual(edges.splice(0),[44,44]);
+ engine.ringShed[0]=true;
+ const saved=Engine.restore(engine.snapshot());
+ view.piston(saved,0);
+ assert.equal(view.cacheMisses,3);
+ assert.deepEqual(edges.splice(0),[28,44]);
+ view.piston(saved,1);
+ assert.deepEqual(edges.splice(0),[44,44]);
+ view.piston(saved,0);
+ assert.equal(view.cacheHits,1);
+ assert.equal(view.cache.size,2);
+ assert.deepEqual(edges,[]);
+ const crown=saved.cylinders[0].contact;
+ crown.crownFatigue=.718;view.piston(saved,0);
+ const sealedSurface=view.cache.get('piston0').key;
+ crown.crownFatigue=.722;view.piston(saved,0);
+ assert.notEqual(view.cache.get('piston0').key,sealedSurface);
+});

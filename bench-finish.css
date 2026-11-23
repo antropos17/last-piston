@@ -1,0 +1,109 @@
+/* Enamel instrument deck and the paper inspection sheet. */
+:root {
+  --paper:#f3eee2; --ink:#232923; --rust:#a83e1a; --edge:#b8b4a5;
+  --stand-paper:#f7f3e9; --stand-ink:var(--ink); --stand-line:#d2cdbf;
+  --stand-active:#283f37; --stand-warning:#9e321e;
+}
+body { background:#e5e1d5; color:var(--ink); font-family:"Segoe UI",Arial,sans-serif; padding:0 clamp(12px,2.6vw,42px) 16px; }
+.lab { max-width:1540px; margin:auto; }
+.masthead { min-height:70px; margin:0 0 18px; padding:10px 0; border-bottom:2px solid var(--ink); display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.wordmark { display:flex;align-items:center;gap:9px;color:var(--ink); }
+.wordmark svg { display:block;width:32px;height:36px;padding:4px;background:var(--rust);stroke:#fff3d7;border-radius:3px; }
+.wordmark h1 { font:800 clamp(23px,2.4vw,36px)/1 "Arial Narrow","Segoe UI",sans-serif;letter-spacing:-.06em;color:var(--ink); }
+.bench-nav { display:flex;align-items:center;gap:6px; }
+.bench-nav button,.inspection-actions button,.fault-search { font:600 13px/1.2 "Segoe UI",sans-serif; }
+.bench-nav button { min-height:44px;color:var(--ink);background:transparent;border:1px solid var(--edge);border-radius:3px;padding:0 15px;cursor:pointer; }
+.bench-nav #new-engine { border-color:var(--rust);background:var(--rust);color:#fff6e7; }
+.bench-nav button:hover { box-shadow:inset 0 0 0 2px currentColor; }
+:focus-visible { outline:3px solid #1380a1;outline-offset:2px; }
+.workstation { max-width:none;grid-template-columns:minmax(0,1fr) clamp(320px,28vw,420px);gap:clamp(12px,1.65vw,26px); }
+.scene-heading,.stand-heading { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.scene-heading { min-height:46px; padding:0 0 9px; }
+.scene-heading h2,.stand-heading h2 { font:700 clamp(18px,1.85vw,27px)/1.1 "Segoe UI",sans-serif; letter-spacing:-.04em; margin:0; }
+#dash-mode,.stand-heading span { font:11px/1.3 var(--mono);color:#4e554e; }
+.engine-workspace { background:#262e29;border:1px solid #242b26;border-radius:4px;overflow:clip; }
+.machine { margin:0;border:0;border-radius:0;box-shadow:none; }
+.scene-caption,#status { color:#f6efdf;background:#1a211de6;border-radius:2px;padding:4px 8px;font-size:11px; }
+.scene-caption { position:absolute;inset:9px auto auto 10px;z-index:1;width:auto;letter-spacing:.015em; }
+.machine.zoomed .scene-caption { visibility:hidden; }
+.cutaway-note[hidden] { display:none; }
+#temperature-scale:not([hidden]) { display:flex;align-items:center;gap:7px;padding:5px 9px;background:#232b26;color:#eee9d9;font-size:11px; }
+.temperature-key { display:grid;grid-template-columns:repeat(4,auto);gap:3px 5px;font:10px var(--mono); }
+.temperature-key i { grid-column:1/-1;height:4px;background:linear-gradient(90deg,#639eab,#ba9853,#eb8a3e,#cb4939); }
+.drive-hint { color:#d9ddce;align-self:center;margin-right:auto;font:12px/1.3 "Segoe UI",sans-serif; }
+.engine-workspace .inspection-actions { display:flex;justify-content:flex-end;background:#253029;border-top:1px solid #4c5448;padding:3px 7px;gap:4px; }
+.engine-workspace .inspection-actions button { color:#f0ebdc;background:transparent;border:1px solid #596158;border-radius:2px;min-height:33px; }
+.engine-workspace .inspection-actions button[aria-pressed=true] { background:#63513e; }
+.scene-column .event-log { color:#81411f; }
+.scene-column .event-log:empty { display:none; }
+#desktop-instruments .control-deck { max-width:none;margin:9px 0 0;display:grid;grid-template-columns:minmax(155px,.9fr) minmax(200px,1.65fr);gap:8px;padding:7px;background:#28322b;border:1px solid #293228; }
+#desktop-instruments .cockpit-cluster { grid-column:auto;margin:0;min-width:0;max-width:none; }
+#desktop-instruments .tachometer { width:clamp(82px,7vw,112px); }
+#desktop-instruments .coolant-gauge { width:clamp(44px,4.7vw,70px); }
+#drive-actions { grid-template-columns:minmax(70px,.55fr) minmax(0,1.45fr); }
+#desktop-instruments .key-switch,#desktop-instruments .pedal { min-height:80px; }
+.stand-inspection { margin-top:5px;border:1px solid var(--edge);border-radius:3px;background:var(--paper);color:var(--ink); }
+.stand-inspection summary { padding:9px 5px; }
+.stand-inspection .cyl { color:#f4ecd7; }
+.stand { background:var(--stand-paper);border:1px solid var(--edge);border-top:4px solid var(--rust);border-radius:3px; }
+.stand-heading { padding:15px 14px;background:transparent;flex-wrap:wrap; }
+.stand-heading h2 { font-size:21px; }
+.stand-tabs button { background:#e5e2d6;color:#444a42; }
+.stand-tabs button[aria-selected=true] { background:#283f37;color:white;box-shadow:inset 0 -3px #a9b29a; }
+.stand-rpm { background:#233b33;color:#fff5d9;padding:16px;border-radius:3px; }
+.stand-rpm strong { font-size:38px; }
+.stand-readings { display:grid;grid-template-columns:1fr 1fr; }
+.stand-readings div { min-width:0;display:grid;align-content:start;gap:5px;padding:11px 5px; }
+.stand-readings dd { font-size:16px; }
+.stand-readings dt { color:#51564d; }
+.stand-panels { height:clamp(395px,65dvh,790px); }
+.fault-search { width:100%;min-height:42px;background:#fffdf6;color:var(--ink);border:1px solid #948e7b;border-radius:3px;padding:8px 11px; }
+.fault-row[hidden],#fault-list section[hidden] { display:none; }
+.fault-switch { background:#fffaf0; }
+.stand-feedback:empty { height:0;margin:0; }
+.stand-feedback:not(:empty) { height:auto;border-left:3px solid var(--rust);padding:7px 10px;background:#eee5d3;color:#543829; }
+#faults-empty { font-size:13px; }
+.settings-dialog.replace-engine { max-width:min(395px,94vw); }
+.replace-engine .settings-columns { display:block; }
+.replace-engine .settings-columns > :not(.settings-service),.replace-engine .settings-service > :not(.settings-confirm) { display:none; }
+.replace-engine .settings-confirm { border:0;margin:0;padding:0; }
+#confirm-reset { background:var(--rust);color:white; }
+.lab footer { color:#4c5149;border-top:1px solid var(--edge); }
+@media (min-width:901px) {
+  .engine-workspace #engine { max-height:clamp(175px,calc(100dvh - 364px),690px); }
+}
+@media (max-width:900px) {
+  .scene-heading { min-height:30px;padding-bottom:5px; }
+  .scene-heading h2 { font-size:19px; }
+  .masthead { min-height:54px;margin-bottom:8px; }
+  .stand-heading { position:static;width:auto;height:auto;clip-path:none;padding:8px 12px; }
+  .stand-heading h2 { font-size:16px; }
+  .stand-panels { height:max(225px,calc(100dvh - var(--stage-height,260px) - 95px)); }
+  #mobile-instruments .control-deck { margin:0; }
+  #mobile-instruments .stand-inspection { margin:0 8px 10px; }
+}
+@media (max-width:600px) {
+  body { padding-inline:6px; }
+  .masthead { flex-wrap:wrap;gap:5px;padding:6px 0; }
+  .wordmark h1 { font-size:22px; }
+  .wordmark svg { width:21px;height:25px; }
+  .bench-nav { gap:3px;flex-wrap:wrap; }
+  .bench-nav button { font-size:12px;padding:0 7px; }
+  .bench-nav #new-engine span { display:none; }
+  .scene-heading { padding-inline:3px; }
+  .scene-heading #dash-mode { display:inline; }
+  .engine-workspace .inspection-actions button { min-height:36px; }
+  .drive-hint { flex:1; min-width:65px;font-size:10px; }
+}
+
+.motor-build {display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;margin:0 0 14px;padding:13px;border:1px solid #aaa28f;border-radius:3px}
+.motor-build legend {padding:0 5px;font-weight:700}
+.motor-build select {min-width:64px;min-height:44px;font:inherit}
+.motor-build output {font:600 14px var(--mono)}
+.motor-build input,.motor-build p,.build-bank {grid-column:1/-1}
+.motor-build input {width:100%;margin:0;min-height:28px;accent-color:#ae532a}
+.motor-build p {margin:0;font-size:13px}
+.build-bank {display:flex;align-items:center;justify-content:center;gap:5px;height:58px;background:#29342e;border:2px solid #565e50}
+.build-bank i {width:27px;height:36px;border-inline:2px solid #a5a494;background:linear-gradient(to bottom,#29342e 0 20%,#b8b3a0 20% 28%,#534f43 28% 34%,#b8b3a0 34% 54%,transparent 54%),linear-gradient(to right,transparent 42%,#8c8b7d 42% 58%,transparent 58%)}
+.build-bank i:nth-child(2n) {transform:scaleY(-1)}
+.cyl[hidden],.build-bank i[hidden] {display:none}

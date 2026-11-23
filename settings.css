@@ -1,0 +1,115 @@
+:is(#settings-open, #failures-open),
+.settings-dialog button,
+.settings-dialog select {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #777263;
+  border-radius: 4px;
+  background: #33322b;
+  color: var(--text);
+  font: 500 14px/1.25 Roboto, "Segoe UI", Arial, sans-serif;
+}
+
+:is(#settings-open, #failures-open), .settings-dialog button { cursor: pointer; }
+:is(#settings-open, #failures-open):hover, .settings-dialog button:hover:not(:disabled) { background: #494237; border-color: var(--accent); }
+.settings-dialog button:disabled { opacity: .62; cursor: default; }
+:is(#settings-open, #failures-open):focus-visible, .settings-dialog :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+html:has(.settings-dialog[open]) { overflow: hidden; }
+.settings-dialog {
+  width: min(44rem, calc(100% - 24px));
+  max-width: none;
+  max-height: calc(100% - 24px);
+  max-height: calc(100dvh - 24px);
+  padding: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scroll-padding-block: 68px 12px;
+  border: 1px solid #686354;
+  border-radius: 8px;
+  background: #262620;
+  color: var(--text);
+  box-shadow: 0 16px 48px #0009;
+}
+.settings-dialog::backdrop { background: #100f0cbb; }
+
+.failures-dialog { width: min(36rem, calc(100% - 24px)); }
+.failure-content { padding: 14px 20px 18px; border: 0; gap: 6px; }
+.failure-content .journal-box { border-top: 1px solid #555147; }
+.failure-content .journal-box li { font-size: 13px; }
+#failure-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+#failure-list button { width: 100%; min-width: 0; text-align: left; display: grid; gap: 3px; overflow-wrap: anywhere; }
+#failure-list button span { color: var(--muted); }
+
+.settings-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  flex-wrap: wrap;
+  padding: 10px 20px;
+  border-bottom: 1px solid #555147;
+  background: #2f2e26;
+}
+.settings-header h2 { margin: 0; font-size: 20px; font-weight: 650; letter-spacing: 0; }
+.settings-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  padding: 16px 20px 20px;
+}
+.settings-group { min-width: 0; }
+.settings-group h3 { margin: 0 0 9px; color: #dfc7a3; font-size: 15px; font-weight: 650; }
+.setting-field { display: grid; gap: 5px; margin: 0 0 12px; font-size: 14px; }
+.setting-field select { width: 100%; min-width: 0; }
+.setting-toggle {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 10px;
+  border: 1px solid #666152;
+  border-radius: 4px;
+  background: #302f29;
+  cursor: pointer;
+  font-size: 14px;
+}
+.setting-toggle:has(:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.setting-toggle input { flex: 0 0 auto; width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
+.setting-slider {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0 8px;
+  align-items: center;
+  margin: 11px 0 0;
+}
+.setting-slider output { color: #dfc7a3; font-size: 13px; font-variant-numeric: tabular-nums; }
+.setting-slider input { grid-column: 1 / -1; width: 100%; min-height: 44px; margin: 0; accent-color: var(--accent); }
+.settings-recordings { margin-top: 4px; border-top: 1px solid #555147; }
+.settings-recordings summary { min-height: 44px; padding: 10px 2px; font-size: 14px; line-height: 24px; }
+#audio-loaded { float: right; margin: 0; color: #dfc7a3; font-size: 13px; font-variant-numeric: tabular-nums; }
+.settings-dialog p, #control-info { margin: 8px 0; color: var(--muted); font: 13px/1.45 Roboto, "Segoe UI", Arial, sans-serif; }
+#recording-status { color: var(--muted); }
+#sample-credits { display: grid; gap: 2px; padding: 0; margin: 10px 0 0; list-style: none; }
+#sample-credits a { display: flex; align-items: center; min-height: 44px; padding: 5px 0; color: #e0cfad; font-size: 13px; overflow-wrap: anywhere; }
+
+.settings-service { grid-column: 1 / -1; padding-top: 13px; border-top: 1px solid #555147; }
+.settings-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.settings-confirm { margin-top: 10px; padding: 10px 12px; background: #3a3029; border: 1px solid #93664f; border-radius: 4px; }
+.settings-confirm p { margin-top: 0; color: #e8ccba; }
+#confirm-reset { border-color: #c59479; background: #58382e; }
+#confirm-reset:hover { background: #674136; }
+
+@media (max-width: 600px) {
+  .settings-columns { grid-template-columns: minmax(0, 1fr); padding: 12px 14px 16px; }
+  .settings-header { padding-inline: 14px; }
+  .failure-content { padding-inline: 14px; }
+  .settings-buttons button { flex: 1 0 auto; min-width: 44px; max-width: 100%; }
+  .settings-dialog select { font-size: 16px; }
+}
+@media (max-width: 450px) {
+  .session #dash-mode:not([hidden]) { display: none; }
+  :is(#settings-open, #failures-open) { padding-inline: 8px; font-size: 13px; }
+}
